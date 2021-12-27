@@ -5,10 +5,18 @@ import MyButton from "./components/MyButton";
 import MyInput from "./components/MyInput";
 import PostItem from "./components/PostItem";
 import PostList from "./components/PostList";
+import ToDoForm from "./components/ToDoForm";
+import ToDo from "./components/ToDo";
 
 function App(){
 
+
   //data 
+
+    const [todos,setTodos] = useState([
+      {id:0,task:'name',complete:false},
+    ]);
+
     const [posts,setPosts] = useState([
       {id:1,title:'js',body:'description'},
       {id:2,title:'js',body:'description'},
@@ -21,6 +29,7 @@ function App(){
  
   // add new post
   const addNewPost = (e) => {
+    console.log(title)
     e.preventDefault()
     const newPost = {
       id: Date.now(),
@@ -32,22 +41,42 @@ function App(){
 
     
   }
+
+  // add task
+  const addTask = (userInput) =>{
+    if(userInput){
+      const Item = {
+        id: 132,
+        task:userInput,
+        complete:false
+      }
+      setTodos([...todos,Item])
+    }
+  }
+  // remove task
+  const removeTask = (id) =>{
+    setTodos([...todos.filter((todo) => todo.id !== id )])
+  }
+  // handle task
+  const handleToggle = (id) =>{
+    setTodos([
+      ...todos.map((todo) =>
+        todo.id === id ? {...todo , complete: !todo.complete} :{...todo}
+      )
+
+    ])
+  }
+
   return(
     <div>
-      <form>
-      <MyInput type="text" placeholder="Name of the post"
-      value={title} 
-      onChange={e =>setTitle(e.target.value) }
-      />
-      <MyInput type="text" placeholder="Description of the post" 
-      value={body}
-      onChange={e=>setBody(e.target.value)}
-      />
-    
-      <MyButton   onClick={addNewPost}>Create Post</MyButton>
-      </form>
-      <br/>
-      <PostList posts={posts} key={posts.id}/>
+      
+      <h2>List of tasks:{todos.length}</h2>
+      <ToDoForm addTask={addTask}/>
+      {todos.map((todo) => {
+        return (
+          <ToDo todo={todo} key={todo.id} toggleTask={handleToggle} removeTask={removeTask} />
+        )
+      })}
     </div>
    
   );
